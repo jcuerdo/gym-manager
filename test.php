@@ -6,29 +6,39 @@ include_once "Employee.php";
 include_once "Payment.php";
 include_once "Product.php";
 include_once "Order.php";
+include_once "CustomerJsonFileRepository.php";
+include_once "CustomerFakeLoaderRepository.php";
 
 //Creating test gym
 $gym = new Gym();
 
-//Creating test customers
-$customer1 = new Customer('Manolo', '1234-G', DateTime::createFromFormat('d-m-Y', '15-04-1988'), true, 'JOVEN');
-$customer2 = new Customer('Pepe', '1234-G', DateTime::createFromFormat('d-m-Y', '10-2-1987'), false, 'SENIOR');
+//We can instantiate the repository with CustomerJsonFileRepository or with CustomerFakeLoaderRepository
+$customerRepository = new CustomerJsonFileRepository();
+##$customerRepository = new CustomerFakeLoaderRepository();
 
+//Testing editing
+$customer = $customerRepository->loadCustomer('77777777G');
+$customer->setName('Secundino');
+$customer->activate();
+$customerRepository->editCustomer($customer);
+
+
+$customers = $customerRepository->loadCustomers();
 //Adding to the gym
-$gym->addCustomer($customer1);
-$gym->addCustomer($customer2);
+foreach ($customers as $customer){
+    $gym->addCustomer($customer);
+}
+
+//Adding test payments
+$customers[0]->addPayment(new Payment(new DateTime("now"), 50, $customers[0]));
+$customers[0]->addPayment(new Payment(new DateTime("now -1 month"), 50, $customers[0]));
+$customers[1]->addPayment(new Payment(new DateTime("now"), 50, $customers[1]));
 
 //Creating one employee
 $emp1 = new Employee('Popeye el marino', '12348-G', DateTime::createFromFormat('d-m-Y', '10-2-1987'));
 
 //Add employee
 $gym->addEmployee($emp1);
-
-//Adding test payments
-$customer1->addPayment(new Payment(new DateTime("now"), 50, $customer1));
-$customer1->addPayment(new Payment(new DateTime("now -1 month"), 50, $customer1));
-$customer2->addPayment(new Payment(new DateTime("now"), 50, $customer2));
-
 
 //Creatin some test products
 
@@ -39,9 +49,9 @@ $gym->addProduct($product1);
 $gym->addProduct($product2);
 
 //Creating some test orders
-$gym->addOrders(new Order($product1,$customer1,$emp1,$product1->getPrice(),"El cliente ha solicitado bla bla bal"));
-$gym->addOrders(new Order($product2,$customer1,$emp1,$product2->getPrice()));
-$gym->addOrders(new Order($product1,$customer2,$emp1,$product2->getPrice()));
+$gym->addOrders(new Order($product1,$customers[0],$emp1,$product1->getPrice(),"001","El cliente ha solicitado bla bla bal"));
+$gym->addOrders(new Order($product2,$customers[0],$emp1,$product2->getPrice()));
+$gym->addOrders(new Order($product1,$customers[1],$emp1,$product2->getPrice()));
 
 
 //Now is time to show our gym:
@@ -66,7 +76,5 @@ echo "Last orders \n";
 foreach ($gym->getOrders() as $order) {
     echo $order . "\n";
 }
-
-
 
 

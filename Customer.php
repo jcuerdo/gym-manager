@@ -49,6 +49,14 @@ class Customer extends Person
     }
 
     /**
+     * @return void
+     */
+    public function deActivate()
+    {
+        $this->active = false;
+    }
+
+    /**
      * @return bool
      */
     public function isActive()
@@ -66,6 +74,6 @@ class Customer extends Person
 
     public function __toString()
     {
-        return parent::__toString() . sprintf(" Customer Data --- Is Active: %s, Rate: %s  ", $this->active, $this->rate);
+        return parent::__toString() . sprintf(" Customer Data - Is Active: %s, Rate: %s  ", $this->active ? 'Yes' : 'No', $this->rate);
     }
 }

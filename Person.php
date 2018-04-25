@@ -49,6 +49,15 @@ class Person
         return $this->date;
     }
 
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+
     public function __toString()
     {
         return sprintf("Name: %s DNI: %s Date: %s ", $this->name, $this->dni, $this->date->format('d-m-Y'));

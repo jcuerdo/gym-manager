@@ -3,6 +3,11 @@
 class Order
 {
     /**
+     * @var string
+     */
+    private $id;
+
+    /**
      * @var Product
      */
     private $product;
@@ -27,13 +32,19 @@ class Order
      */
     private $comment;
 
-    public function __construct(Product $product, Customer $customer, Employee $employee, $sellPrice, $comment = "")
+    public function __construct(Product $product, Customer $customer, Employee $employee, $sellPrice, $id = null, $comment = "")
     {
         $this->product = $product;
         $this->customer = $customer;
         $this->employee = $employee;
         $this->sellPrice = $sellPrice;
         $this->comment = $comment;
+
+        if ($id === null) {
+           $this->id = uniqid();
+        } else {
+            $this->id = $id;
+        }
     }
 
     /**
@@ -76,9 +87,17 @@ class Order
         return $this->comment;
     }
 
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function __toString()
     {
-        return sprintf("Product: %s , Client: %s, Final price: %s", $this->product->getName(), $this->customer, $this->getSellPrice());
+        return sprintf("ID: %s Product: %s , Client: %s, Final price: %s", $this->getId(), $this->product->getName(), $this->customer, $this->getSellPrice());
     }
 
 
